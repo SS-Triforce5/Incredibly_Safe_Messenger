@@ -2,7 +2,7 @@ require 'sinatra'
 require 'yaml'
 require 'json'
 
-require_relative 'models/messages'
+require_relative 'models/message'
 
 class MessengerAPI < Sinatra::Base
 
