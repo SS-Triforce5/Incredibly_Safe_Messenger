@@ -1,13 +1,14 @@
-class Channel < Sequel::Model
+class User < Sequel::Model
   plugin :timestamps, :update_on_create => true
   def to_json(options = {})
     JSON.pretty_generate(
       { 
-        type: 'channel',
+        type: 'userinfo',
         id: id,
         data: {
-          channel: channel,
-          sender: sender,
+          name: name,
+          email: email,
+          password: password,
           time: created_at
         }
       },
