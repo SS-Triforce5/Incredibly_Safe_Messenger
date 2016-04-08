@@ -1,17 +1,17 @@
-
-class Message
-  STORE_FILE = 'db/messages.yaml'.freeze
-  
-  def initialize(id = '')
-  	messages = YAML::load(File.read(STORE_FILE))
-  	@messages = (id == '') ? messages : messages[id]
-  end
-  
-  def to_yaml
-    @messages.to_yaml
-  end
-
+class Message < Sequel::Model
+  plugin :timestamps, :update_on_create => true
   def to_json(options = {})
-    @messages.to_json
+    JSON.pretty_generate(
+      { 
+        type: 'message',
+        id: id,
+        data: {
+          sender: sender,
+          receiver: receiver,
+          time: created_at
+        }
+      },
+      options
+    )
   end
 end

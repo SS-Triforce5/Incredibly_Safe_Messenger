@@ -2,7 +2,8 @@ require 'sinatra'
 require 'yaml'
 require 'json'
 
-require_relative 'models/message'
+require_relative 'config/environments'
+require_relative 'models/init'
 
 class MessengerAPI < Sinatra::Base
 
@@ -11,10 +12,10 @@ class MessengerAPI < Sinatra::Base
   end
 
   get '/api/v1/messages/?' do
-  	Message.new.to_json
+    Message.all.to_json
   end
 
   get '/api/v1/messages/:id.json' do
-    Message.new(params[:id]).to_json
+    Message.where(sender: params[:id]).or(receiver: params[:id]).all.to_json
   end
 end
