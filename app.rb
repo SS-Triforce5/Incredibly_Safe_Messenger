@@ -12,9 +12,13 @@ class MessengerAPI < Sinatra::Base
   end
 
   app_get_all_users = lambda do
+    content_type 'application/json'
+
     User.all.to_json
   end
   app_get_user = lambda do
+    content_type 'application/json'
+
     User.where(name: params[:id]).all.to_json
   end
   app_post_user = lambda do  

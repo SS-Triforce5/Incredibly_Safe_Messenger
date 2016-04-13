@@ -18,7 +18,7 @@ describe 'Testing Message resource routes' do
 
     it 'SAD: should not create Messages with null sender and receiver' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { sender:null, receiver:null}.to_json
+      req_body = {}.to_json
       post '/api/v1/message/', req_body, req_header
       post '/api/v1/message/', req_body, req_header
       _(last_response.status).must_equal 400
@@ -28,9 +28,9 @@ describe 'Testing Message resource routes' do
 
   describe 'Finding existing messages' do
     it 'HAPPY: should find an existing message' do
-      new_message = Message.create(name: 'demo Message')
+      new_message = Message.create(sender: 'demo sender' ,receiver: 'demo receiver')
       new_configs = (1..3).map do |i|
-        new_project.add_configuration(filename: "Message_file#{i}.rb")
+        new_message.add_configuration(filename: "Message_file#{i}.rb")
       end
 
       get "/api/v1/message/#{new_message.id}"
@@ -51,7 +51,7 @@ describe 'Testing Message resource routes' do
 
   describe 'Getting an index of existing Messages' do
     it 'HAPPY: should find list of existing Messages' do
-      (1..5).each { |i| Message.create(name: "Message #{i}") }
+      (1..5).each { |i| Message.create(sender: "Sender #{i}" , receiver: "Receiver #{i}") }
       result = get '/api/v1/message'
       mes = JSON.parse(result.body)
       _(mes['data'].count).must_equal 5
