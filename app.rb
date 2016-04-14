@@ -7,6 +7,7 @@ require_relative 'models/init'
 
 class MessengerAPI < Sinatra::Base
 
+
   app_get_root = lambda do
     'Messenger service is up and running at /api/v1'
   end
@@ -17,7 +18,7 @@ class MessengerAPI < Sinatra::Base
   app_get_user = lambda do
     User.where(name: params[:id]).all.to_json
   end
-  app_post_user = lambda do  
+  app_post_user = lambda do
     User.create(JSON.parse(request.body.read))
   end
 
@@ -25,10 +26,13 @@ class MessengerAPI < Sinatra::Base
     Message.all.to_json
   end
   app_get_message = lambda do
-    Message.where(sender: params[:id]).or(receiver: params[:id]).all.to_json
+    message = Message.where(sender: params[:id]).or(receiver: params[:id]).all.to_json
+  
   end
-  app_post_message = lambda do  
+
+  app_post_message = lambda do
     Message.create(JSON.parse(request.body.read))
+
   end
 
   app_get_all_channels = lambda do
@@ -37,10 +41,10 @@ class MessengerAPI < Sinatra::Base
   app_get_channel = lambda do
     Channel.where(channel: params[:id]).all.to_json
   end
-  app_post_channel = lambda do  
+  app_post_channel = lambda do
     Channel.create(JSON.parse(request.body.read))
   end
-  
+
   # Web App Views Routes
   get '/', &app_get_root
 
@@ -54,6 +58,6 @@ class MessengerAPI < Sinatra::Base
 
   get '/api/v1/channel/?', &app_get_all_channels
   get '/api/v1/channel/:id.json', &app_get_channel
-  post '/api/v1/channel/?', &app_post_channel  
-  
+  post '/api/v1/channel/?', &app_post_channel
+
 end
