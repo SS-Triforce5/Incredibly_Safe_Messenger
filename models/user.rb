@@ -1,4 +1,5 @@
 class User < Sequel::Model
+
   plugin :timestamps, :update_on_create => true
   def to_json(options = {})
     JSON.pretty_generate(
