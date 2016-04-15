@@ -15,19 +15,31 @@ class MessengerAPI < Sinatra::Base
   app_get_all_users = lambda do
     User.all.to_json
   end
+
   app_get_user = lambda do
-    User.where(name: params[:id]).all.to_json
+    data = User.where(name: params[:id]).all
+    if data
+      JSON.pretty_generate(data)
+    else
+      halt 404, "User #{params[:id]} not found"
+    end
   end
-  app_post_user = lambda do
+
+  app_post_user = lambda do  
     User.create(JSON.parse(request.body.read))
   end
 
   app_get_all_messages = lambda do
     Message.all.to_json
   end
-  app_get_message = lambda do
-    message = Message.where(sender: params[:id]).or(receiver: params[:id]).all.to_json
   
+  app_get_message = lambda do
+    data = Message.where(sender: params[:id]).or(receiver: params[:id]).all.to_json
+    if data
+       JSON.pretty_generate(data)
+    else
+      halt 404, "Messages of id #{params[:id]} not found"
+    end
   end
 
   app_post_message = lambda do
@@ -38,9 +50,16 @@ class MessengerAPI < Sinatra::Base
   app_get_all_channels = lambda do
     Channel.all.to_json
   end
+
   app_get_channel = lambda do
-    Channel.where(channel: params[:id]).all.to_json
+    data = Channel.where(channel: params[:id]).all.to_json
+    if data
+       JSON.pretty_generate(data)
+    else
+      halt 404, "Channel #{params[:id]} not found"
+    end
   end
+
   app_post_channel = lambda do
     Channel.create(JSON.parse(request.body.read))
   end
