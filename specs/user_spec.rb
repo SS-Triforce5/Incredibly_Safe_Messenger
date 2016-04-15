@@ -8,7 +8,7 @@ describe 'Testing User resource routes' do
   end
 
   describe 'Creating new user' do
-    it 'HAPPY: should create a new user' do
+    it 'HAPPY: should create a new unique user' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
       req_body = { name: 'Demo User' }.to_json
       post '/api/v1/user/', req_body, req_header
@@ -57,5 +57,4 @@ describe 'Testing User resource routes' do
       _(projs['data'].count).must_equal 5
     end
   end
-
 end
