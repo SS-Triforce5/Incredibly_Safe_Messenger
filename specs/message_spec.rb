@@ -18,7 +18,7 @@ describe 'Testing Message resource routes' do
 
     it 'SAD: should not create Messages with null sender and receiver' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { sender:'', receiver:''}.to_json
+      req_body = { message: 'hello'}.to_json
       post '/api/v1/message/', req_body, req_header
       _(last_response.status).must_equal 400
       _(last_response.location).must_be_nil
@@ -28,12 +28,11 @@ describe 'Testing Message resource routes' do
   describe 'Finding existing messages' do
     it 'HAPPY: should find an existing message' do
       new_message = Message.create(sender: 'Kuan' , receiver: 'pengyuchen',message: 'hello there' )
-
-      get "/api/v1/messages/#{new_message.id}"
+      get "/api/v1/message/#{new_message.id}"
       _(last_response.status).must_equal 200
-
       results = JSON.parse(last_response.body)
-      _(results['data']['id']).must_equal new_message.id
+      print results
+      _(results[0]['id']).must_equal new_message.id
     end
 
     it 'SAD: should not find non-existent messages' do
