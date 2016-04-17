@@ -22,7 +22,8 @@ class MessengerAPI < Sinatra::Base
   end
 
   app_get_user = lambda do
-    data = User.where(name: params[:id]).all
+    content_type 'application/json'
+    data = User.where(id: params[:id]).all
     if data
       JSON.pretty_generate(data)
     else
@@ -31,7 +32,16 @@ class MessengerAPI < Sinatra::Base
   end
 
   app_post_user = lambda do
-    User.create(JSON.parse(request.body.read))
+    begin
+  saved_user= User.create(JSON.parse(request.body.read))
+  #saved_user.save
+   rescue => e
+     logger.info "FAILED to create new user: #{e.inspect}"
+     halt 400
+   end
+   new_location = URI.join(@request_url.to_s + '/', saved_user.id.to_s).to_s
+   status 201
+   headers('Location' => new_location)
   end
 
   app_get_all_messages = lambda do
@@ -78,14 +88,10 @@ end
     data = Channel.where(channel: params[:id]).all.to_json
     if data
        JSON.pretty_generate(data)
-
     else
       halt 404, "Channel #{params[:id]} not found"
     end
   end
-
-
-
 
   app_post_channel = lambda do
    begin
@@ -103,13 +109,12 @@ end
   get '/', &app_get_root
 
   get '/api/v1/user/?', &app_get_all_users
-  get '/api/v1/user/:id.json', &app_get_user
+  get '/api/v1/user/:id', &app_get_user
   post '/api/v1/user/?', &app_post_user
 
   get '/api/v1/message/?', &app_get_all_messages
   get '/api/v1/message/:id.json', &app_get_message_json
   get '/api/v1/message/:id', &app_get_message
-
   post '/api/v1/message/?', &app_post_message
 
   get '/api/v1/channel/?', &app_get_all_channels
