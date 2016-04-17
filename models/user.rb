@@ -2,6 +2,7 @@ require 'json'
 require 'sequel'
 class User < Sequel::Model
   plugin :timestamps, :update_on_create => true
+  #set_allowed_columns :name, :email 
   def to_json(options = {})
     JSON.pretty_generate(
       {

@@ -33,7 +33,7 @@ class MessengerAPI < Sinatra::Base
 
   app_post_user = lambda do
     begin
-  saved_user= User.create(JSON.parse(request.body.read))
+   saved_user = User.create(JSON.parse(request.body.read))
   #saved_user.save
    rescue => e
      logger.info "FAILED to create new user: #{e.inspect}"
@@ -94,8 +94,8 @@ end
   end
 
   app_post_channel = lambda do
-   begin
-    saved_channel= Channel.create(JSON.parse(request.body.read))
+  begin
+    saved_channel = Channel.create(JSON.parse(request.body.read))
    rescue => e
     logger.info "FAILED to create new Channel: #{e.inspect}"
     halt 400
@@ -120,5 +120,4 @@ end
   get '/api/v1/channel/?', &app_get_all_channels
   get '/api/v1/channel/:id.json', &app_get_channel
   post '/api/v1/channel/?', &app_post_channel
-
 end
