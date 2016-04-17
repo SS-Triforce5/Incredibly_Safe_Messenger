@@ -68,7 +68,6 @@ end
    new_location = URI.join(@request_url.to_s + '/', saved_message.id.to_s).to_s
    status 201
    headers('Location' => new_location)
-
   end
 
   app_get_all_channels = lambda do
@@ -79,13 +78,25 @@ end
     data = Channel.where(channel: params[:id]).all.to_json
     if data
        JSON.pretty_generate(data)
+
     else
       halt 404, "Channel #{params[:id]} not found"
     end
   end
 
+
+
+
   app_post_channel = lambda do
-    Channel.create(JSON.parse(request.body.read))
+   begin
+    saved_channel= Channel.create(JSON.parse(request.body.read))
+   rescue => e
+    logger.info "FAILED to create new Channel: #{e.inspect}"
+    halt 400
+  end
+  new_location = URI.join(@request_url.to_s + '/', saved_channel.id.to_s).to_s
+  status 201
+  headers('Location' => new_location)
   end
 
   # Web App Views Routes
