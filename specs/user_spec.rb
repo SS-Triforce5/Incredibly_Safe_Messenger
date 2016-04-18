@@ -21,6 +21,7 @@ describe 'Testing User resource routes' do
       req_body = { name: 'Demo User', password: 'Demo Password' }.to_json
       post '/api/v1/user/', req_body, req_header
       post '/api/v1/user/', req_body, req_header
+
       _(last_response.status).must_equal 400
       _(last_response.location).must_be_nil
     end

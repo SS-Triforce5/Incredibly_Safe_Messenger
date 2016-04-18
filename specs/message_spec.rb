@@ -1,3 +1,4 @@
+
 require_relative './spec_helper'
 
 describe 'Testing Message resource routes' do

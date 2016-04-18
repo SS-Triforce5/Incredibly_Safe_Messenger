@@ -23,9 +23,10 @@ class MessengerAPI < Sinatra::Base
 
   app_get_user = lambda do
     content_type 'application/json'
-    data = User.where(id: params[:id]).all
-    if data
-      JSON.pretty_generate(data)
+    data = User.where(id: :$find_id)
+    call_data = data.call(:select, :find_id => params[:id])
+    if call_data
+      JSON.pretty_generate(call_data)
     else
       halt 404, "User #{params[:id]} not found"
     end
@@ -34,7 +35,7 @@ class MessengerAPI < Sinatra::Base
   app_post_user = lambda do
     begin
    saved_user = User.create(JSON.parse(request.body.read))
-  #saved_user.save
+
    rescue => e
      logger.info "FAILED to create new user: #{e.inspect}"
      halt 400
@@ -51,7 +52,7 @@ class MessengerAPI < Sinatra::Base
   app_get_message_json = lambda do
     data = Message.where(sender: params[:id]).or(receiver: params[:id]).all.to_json
     if data
-       JSON.pretty_generate(data)
+      JSON.pretty_generate(data)
     else
       halt 404, "Messages of id #{params[:id]} not found"
     end
@@ -59,18 +60,18 @@ class MessengerAPI < Sinatra::Base
 
   app_get_message = lambda do
   content_type 'application/json'
-  message = Message.where(id: params[:id]).all
-  if message
-    JSON.pretty_generate(message)
+  messages = Message.where(id: :$find_id)
+  call_message = messages.call(:select, :find_id => params[:id] )
+  if call_message
+    JSON.pretty_generate(call_message)
   else
     halt 404, "MESSAGE NOT FOUND: #{id}"
   end
-end
-
+  end
 
   app_post_message = lambda do
-    begin
-  saved_message= Message.create(JSON.parse(request.body.read))
+  begin
+   saved_message = Message.create(JSON.parse(request.body.read))
    rescue => e
      logger.info "FAILED to create new message: #{e.inspect}"
      halt 400
@@ -85,9 +86,10 @@ end
   end
 
   app_get_channel = lambda do
-    data = Channel.where(channel: params[:id]).all.to_json
-    if data
-       JSON.pretty_generate(data)
+    data = Channel.where(id: :$find_id)
+    call_data = data.call(:select, :find_id => params[:id] )
+    if call_data
+      JSON.pretty_generate(call_data)
     else
       halt 404, "Channel #{params[:id]} not found"
     end
@@ -96,9 +98,9 @@ end
   app_post_channel = lambda do
   begin
     saved_channel = Channel.create(JSON.parse(request.body.read))
-   rescue => e
-    logger.info "FAILED to create new Channel: #{e.inspect}"
-    halt 400
+  rescue => e
+  logger.info "FAILED to create new Channel: #{e.inspect}"
+  halt 400
   end
   new_location = URI.join(@request_url.to_s + '/', saved_channel.id.to_s).to_s
   status 201
