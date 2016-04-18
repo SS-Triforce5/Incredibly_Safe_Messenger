@@ -61,7 +61,7 @@ class MessengerAPI < Sinatra::Base
   app_get_message = lambda do
   content_type 'application/json'
   messages = Message.where(id: :$find_id)
-  call_message = messages.call(:select, :find_id => params[:id] )
+  call_message = messages.call(:select, :find_id => params[:id])
   if call_message
     JSON.pretty_generate(call_message)
   else
