@@ -1,3 +1,4 @@
+
 require_relative './spec_helper'
 
 describe 'Testing Message resource routes' do
@@ -31,7 +32,6 @@ describe 'Testing Message resource routes' do
       get "/api/v1/message/#{new_message.id}"
       _(last_response.status).must_equal 200
       results = JSON.parse(last_response.body)
-      print results
       _(results[0]['id']).must_equal new_message.id
     end
 

@@ -5,9 +5,9 @@ Sequel.migration do
   change do
     create_table(:users) do
       primary_key :id
-      string :name
+      String :name, null: false, unique: true
       String :email
-      String :password
+      String :password, null: false
       timestamp :created_at
 
       unique [:name, :email]
