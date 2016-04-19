@@ -7,7 +7,6 @@ require_relative 'config/environments'
 require_relative 'models/init'
 
 class MessengerAPI < Sinatra::Base
-
   before do
     host_url = "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
     @request_url = URI.join(host_url, request.path.to_s)
@@ -25,7 +24,7 @@ class MessengerAPI < Sinatra::Base
     content_type 'application/json'
     data = User.where(id: :$find_id)
     call_data = data.call(:select, :find_id => params[:id])
-    if call_data
+    if !call_data.empty?
       JSON.pretty_generate(call_data)
     else
       halt 404, "User #{params[:id]} not found"
@@ -34,15 +33,14 @@ class MessengerAPI < Sinatra::Base
 
   app_post_user = lambda do
     begin
-   saved_user = User.create(JSON.parse(request.body.read))
-
-   rescue => e
-     logger.info "FAILED to create new user: #{e.inspect}"
-     halt 400
-   end
-   new_location = URI.join(@request_url.to_s + '/', saved_user.id.to_s).to_s
-   status 201
-   headers('Location' => new_location)
+      saved_user = User.create(JSON.parse(request.body.read))
+    rescue => e
+      logger.info "FAILED to create new user: #{e.inspect}"
+      halt 400
+    end
+    new_location = URI.join(@request_url.to_s + '/', saved_user.id.to_s).to_s
+    status 201
+    headers('Location' => new_location)
   end
 
   app_get_all_messages = lambda do
@@ -51,7 +49,7 @@ class MessengerAPI < Sinatra::Base
 
   app_get_message_json = lambda do
     data = Message.where(sender: params[:id]).or(receiver: params[:id]).all.to_json
-    if data
+    if !data.empty?
       JSON.pretty_generate(data)
     else
       halt 404, "Messages of id #{params[:id]} not found"
@@ -59,26 +57,26 @@ class MessengerAPI < Sinatra::Base
   end
 
   app_get_message = lambda do
-  content_type 'application/json'
-  messages = Message.where(id: :$find_id)
-  call_message = messages.call(:select, :find_id => params[:id])
-  if call_message
-    JSON.pretty_generate(call_message)
-  else
-    halt 404, "MESSAGE NOT FOUND: #{id}"
-  end
+    content_type 'application/json'
+    messages = Message.where(id: :$find_id)
+    call_message = messages.call(:select, :find_id => params[:id])
+    if !call_message.empty?
+      JSON.pretty_generate(call_message)
+    else
+      halt 404, "MESSAGE NOT FOUND: #{params[:id]}"
+    end
   end
 
   app_post_message = lambda do
-  begin
-   saved_message = Message.create(JSON.parse(request.body.read))
-   rescue => e
-     logger.info "FAILED to create new message: #{e.inspect}"
-     halt 400
-   end
-   new_location = URI.join(@request_url.to_s + '/', saved_message.id.to_s).to_s
-   status 201
-   headers('Location' => new_location)
+    begin
+      saved_message = Message.create(JSON.parse(request.body.read))
+    rescue => e
+      logger.info "FAILED to create new message: #{e.inspect}"
+      halt 400
+     end
+     new_location = URI.join(@request_url.to_s + '/', saved_message.id.to_s).to_s
+     status 201
+     headers('Location' => new_location)
   end
 
   app_get_all_channels = lambda do
@@ -88,7 +86,7 @@ class MessengerAPI < Sinatra::Base
   app_get_channel = lambda do
     data = Channel.where(id: :$find_id)
     call_data = data.call(:select, :find_id => params[:id] )
-    if call_data
+    if !call_data.empty?
       JSON.pretty_generate(call_data)
     else
       halt 404, "Channel #{params[:id]} not found"
@@ -96,15 +94,15 @@ class MessengerAPI < Sinatra::Base
   end
 
   app_post_channel = lambda do
-  begin
-    saved_channel = Channel.create(JSON.parse(request.body.read))
-  rescue => e
-  logger.info "FAILED to create new Channel: #{e.inspect}"
-  halt 400
-  end
-  new_location = URI.join(@request_url.to_s + '/', saved_channel.id.to_s).to_s
-  status 201
-  headers('Location' => new_location)
+    begin
+      saved_channel = Channel.create(JSON.parse(request.body.read))
+    rescue => e
+      logger.info "FAILED to create new Channel: #{e.inspect}"
+      halt 400
+    end
+    new_location = URI.join(@request_url.to_s + '/', saved_channel.id.to_s).to_s
+    status 201
+    headers('Location' => new_location)
   end
 
   # Web App Views Routes
