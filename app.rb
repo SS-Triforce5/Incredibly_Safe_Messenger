@@ -7,6 +7,8 @@ require_relative 'config/environments'
 require_relative 'models/init'
 
 class MessengerAPI < Sinatra::Base
+  enable :logging
+
   before do
     host_url = "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
     @request_url = URI.join(host_url, request.path.to_s)
@@ -69,8 +71,12 @@ class MessengerAPI < Sinatra::Base
 
   app_post_message = lambda do
     begin
-      saved_message = Message.create(JSON.parse(request.body.read))
+      data = JSON.parse(request.body.read)
+      saved_message = Message.create(sender: data['sender'], receiver: data['receiver'])
+      saved_message.message= data['message']
+      saved_message.save
     rescue => e
+      logger.info data
       logger.info "FAILED to create new message: #{e.inspect}"
       halt 400
      end
