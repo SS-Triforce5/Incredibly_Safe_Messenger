@@ -11,7 +11,7 @@ describe 'Testing Message resource routes' do
   describe 'Creating new Messages' do
     it 'HAPPY: should create a new Message' do
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { sender: 'Demo Sender' , receiver: 'Demo Receiver' }.to_json
+      req_body = { sender: 'Demo Sender', receiver: 'Demo Receiver',message: 'hello'}.to_json
       post '/api/v1/message/', req_body, req_header
       _(last_response.status).must_equal 201
       _(last_response.location).must_match(%r{http://})
@@ -28,7 +28,9 @@ describe 'Testing Message resource routes' do
 
   describe 'Finding existing messages' do
     it 'HAPPY: should find an existing message' do
-      new_message = Message.create(sender: 'Kuan' , receiver: 'pengyuchen',message: 'hello there' )
+      new_message = Message.create(sender: 'Kuan' ,receiver: 'pengyuchen')
+      new_message.message = 'hello~~~~~'
+      new_message.save
       get "/api/v1/message/#{new_message.id}"
       _(last_response.status).must_equal 200
       results = JSON.parse(last_response.body)

@@ -7,6 +7,8 @@ require_relative 'config/environments'
 require_relative 'models/init'
 
 class MessengerAPI < Sinatra::Base
+  enable :logging
+
   before do
     host_url = "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
     @request_url = URI.join(host_url, request.path.to_s)
@@ -58,7 +60,7 @@ class MessengerAPI < Sinatra::Base
 
   app_get_message = lambda do
     content_type 'application/json'
-    messages = Message.where(id: :$find_id)
+    messages = Message.where(sender: :$find_id)
     call_message = messages.call(:select, :find_id => params[:id])
     if !call_message.empty?
       JSON.pretty_generate(call_message)
@@ -69,7 +71,10 @@ class MessengerAPI < Sinatra::Base
 
   app_post_message = lambda do
     begin
-      saved_message = Message.create(JSON.parse(request.body.read))
+      data = JSON.parse(request.body.read)
+      saved_message = Message.create(sender: data['sender'], receiver: data['receiver'])
+      saved_message.message= data['message']
+      saved_message.save
     rescue => e
       logger.info "FAILED to create new message: #{e.inspect}"
       halt 400
@@ -84,18 +89,21 @@ class MessengerAPI < Sinatra::Base
   end
 
   app_get_channel = lambda do
-    data = Channel.where(id: :$find_id)
-    call_data = data.call(:select, :find_id => params[:id] )
+    data = Channel.where(channel: :$find_id)
+    call_data = data.call(:select, :find_id => params[:id].to_i )
     if !call_data.empty?
       JSON.pretty_generate(call_data)
     else
+      logger.info call_data
       halt 404, "Channel #{params[:id]} not found"
     end
   end
 
   app_post_channel = lambda do
     begin
-      saved_channel = Channel.create(JSON.parse(request.body.read))
+      data = JSON.parse(request.body.read)
+      saved_channel = Channel.create(channel: data['channel'].to_i, sender: data['sender'])
+      saved_channel.message = data['message']
     rescue => e
       logger.info "FAILED to create new Channel: #{e.inspect}"
       halt 400

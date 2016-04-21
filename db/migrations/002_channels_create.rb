@@ -7,7 +7,8 @@ Sequel.migration do
       primary_key :id
       integer :channel
       String :sender, null: false
-      String :message
+      String :message_encrypted, text: true
+      String :nonce
       timestamp :created_at
     end
   end
