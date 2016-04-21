@@ -7,14 +7,14 @@ class Message < Sequel::Model
   plugin :timestamps, :update_on_create => true
   set_allowed_columns :sender, :receiver
 
-def message=(message_plaintext)
-  @message = message_plaintext
-  self.message_encrypted = encrypt(@message)
-end
+  def message=(message_plaintext)
+    @message = message_plaintext
+    self.message_encrypted = encrypt(@message)
+  end
 
-def message
-  @message ||= decrypt(message_encrypted)
-end
+  def message
+    @message ||= decrypt(message_encrypted)
+  end
 
   def to_json(options = {})
     msg = message ? Base64.strict_encode64(message) : nil
