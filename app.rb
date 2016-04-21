@@ -76,7 +76,6 @@ class MessengerAPI < Sinatra::Base
       saved_message.message= data['message']
       saved_message.save
     rescue => e
-      logger.info data
       logger.info "FAILED to create new message: #{e.inspect}"
       halt 400
      end
@@ -101,7 +100,9 @@ class MessengerAPI < Sinatra::Base
 
   app_post_channel = lambda do
     begin
-      saved_channel = Channel.create(JSON.parse(request.body.read))
+      data = JSON.parse(request.body.read)
+      saved_channel = Channel.create(channel: data['channel'].to_i, sender: data['sender'])
+      saved_channel.message = data['message']
     rescue => e
       logger.info "FAILED to create new Channel: #{e.inspect}"
       halt 400

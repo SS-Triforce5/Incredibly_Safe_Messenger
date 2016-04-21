@@ -2,6 +2,7 @@ require 'json'
 require 'sequel'
 require 'base64'
 require_relative'lib/encryptable_model'
+
 class Message < Sequel::Model
   include EncryptableModel
   plugin :timestamps, :update_on_create => true
