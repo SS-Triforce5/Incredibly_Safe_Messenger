@@ -4,12 +4,13 @@ Sequel.migration do
   change do
     create_table(:accounts) do
       primary_key :id
-      String :name, null: false, unique: true
-      String :email
-      String :password, null: false
-      timestamp :created_at
 
-      unique [:name, :email]
+      String :username, null: false, unique: true
+      String :email, null: false
+      String :password_hash, text: true, null: false
+      String :salt, null: false
+      DateTime :created_at
+      DateTime :updated_at
     end
   end
 end

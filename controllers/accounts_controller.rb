@@ -18,12 +18,16 @@ class MessengerAPI < Sinatra::Base
 
   app_post_account = lambda do
     begin
-      saved_account = Account.create(JSON.parse(request.body.read))
+      data = JSON.parse(request.body.read)
+      new_account = CreateNewAccount.call(
+        username: data['username'],
+        email: data['email'],
+        password: data['password'])
     rescue => e
       logger.info "FAILED to create new account: #{e.inspect}"
       halt 400
     end
-    new_location = URI.join(@request_url.to_s + '/', saved_account.id.to_s).to_s
+    new_location = URI.join(@request_url.to_s + '/', new_account.username).to_s
     status 201
     headers('Location' => new_location)
   end

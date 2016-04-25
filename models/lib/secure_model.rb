@@ -23,4 +23,11 @@ module SecureModel
       simple_box.decrypt(ciphertext)    
     end
   end
+
+  def hash_password(salt, pwd)
+    opslimit = 2**20
+    memlimit = 2**24
+    digest_size = 64
+    RbNaCl::PasswordHash.scrypt(pwd, salt, opslimit, memlimit, digest_size)
+  end
 end
