@@ -1,6 +1,5 @@
 require 'sequel'
 
-
 Sequel.migration do
   change do
     create_table(:messages) do
