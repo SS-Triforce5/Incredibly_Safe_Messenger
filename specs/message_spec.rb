@@ -3,7 +3,7 @@ require_relative './spec_helper'
 
 describe 'Testing Message resource routes' do
   before do
-    User.dataset.delete
+    Account.dataset.delete
     Channel.dataset.delete
     Message.dataset.delete
   end
@@ -31,7 +31,7 @@ describe 'Testing Message resource routes' do
       new_message = Message.create(sender: 'Kuan' ,receiver: 'pengyuchen')
       new_message.message = 'hello~~~~~'
       new_message.save
-      get "/api/v1/message/#{new_message.id}"
+      get "/api/v1/message/#{new_message.sender}"
       _(last_response.status).must_equal 200
       results = JSON.parse(last_response.body)
       _(results[0]['id']).must_equal new_message.id
