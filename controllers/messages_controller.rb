@@ -26,9 +26,10 @@ class MessengerAPI < Sinatra::Base
   app_post_message = lambda do
     begin
       data = JSON.parse(request.body.read)
-      saved_message = Message.create(sender: data['sender'], receiver: data['receiver'])
-      saved_message.message= data['message']
-      saved_message.save
+      saved_message = Message.call(
+        sender: data['sender'], 
+        receiver: data['receiver'],
+        message: data['message'])
     rescue => e
       logger.info "FAILED to create new message: #{e.inspect}"
       halt 400
