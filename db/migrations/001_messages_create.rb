@@ -8,7 +8,6 @@ Sequel.migration do
       String :sender, null: false
       String :receiver, null: false
       String :message_encrypted, text: true
-      String :nonce
       timestamp :created_at
     end
   end
