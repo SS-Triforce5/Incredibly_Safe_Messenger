@@ -26,7 +26,7 @@ class MessengerAPI < Sinatra::Base
   app_post_message = lambda do
     begin
       data = JSON.parse(request.body.read)
-      saved_message = Message.call(
+      saved_message = CreateNewMessage.call(
         sender: data['sender'], 
         receiver: data['receiver'],
         message: data['message'])
