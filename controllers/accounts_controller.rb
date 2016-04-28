@@ -27,7 +27,7 @@ class MessengerAPI < Sinatra::Base
       logger.info "FAILED to create new account: #{e.inspect}"
       halt 400
     end
-    new_location = URI.join(@request_url.to_s + '/', new_account.username).to_s
+    new_location = URI.join(@request_url.to_s + '/', new_account.username.to_s).to_s
     status 201
     headers('Location' => new_location)
   end

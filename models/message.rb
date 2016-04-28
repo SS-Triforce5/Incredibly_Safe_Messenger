@@ -6,7 +6,7 @@ require_relative'lib/secure_model'
 class Message < Sequel::Model
   include SecureModel
   plugin :timestamps, :update_on_create => true
-  set_allowed_columns :sender, :receiver
+  set_allowed_columns :sender, :receiver 
 
   def message=(message_plaintext)
     self.message_encrypted = encrypt(message_plaintext)
@@ -25,7 +25,7 @@ class Message < Sequel::Model
         data: {
           sender: sender,
           receiver: receiver,
-          message_base64: msg,
+          message: msg,
           time: created_at
         }
       },

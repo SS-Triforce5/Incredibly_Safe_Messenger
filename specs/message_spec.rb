@@ -48,7 +48,7 @@ describe 'Testing Message resource routes' do
       (1..5).each { |i| Message.create(sender: 'Kuan', receiver: 'pengyuchen',message:"hello there #{i}") }
       result = get '/api/v1/message'
       msgs = JSON.parse(result.body)
-      _(msgs['data'].count).must_equal 5
+      msgs.count.must_equal 5
     end
   end
 =end
