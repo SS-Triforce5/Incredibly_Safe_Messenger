@@ -8,6 +8,8 @@ class Message < Sequel::Model
   plugin :timestamps, :update_on_create => true
   set_allowed_columns :sender, :receiver
 
+  many_to_one :who_send, class: :Account
+
   def message=(message_plaintext)
     self.message_encrypted = encrypt(message_plaintext)
   end

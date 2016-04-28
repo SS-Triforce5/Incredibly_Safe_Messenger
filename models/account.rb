@@ -9,6 +9,8 @@ class Account < Sequel::Model
   plugin :timestamps, update_on_create: true
   set_allowed_columns :username, :email
 
+  one_to_many :send_message, class: :Message, key: :sender
+
   def password=(new_password)
     nacl = RbNaCl::Random.random_bytes(RbNaCl::PasswordHash::SCrypt::SALTBYTES)
     digest = hash_password(nacl, new_password)
