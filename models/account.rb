@@ -8,8 +8,12 @@ class Account < Sequel::Model
   include SecureModel
   plugin :timestamps, update_on_create: true
   set_allowed_columns :username, :email
-
   one_to_many :send_message, class: :Message, key: :sender
+  one_to_many :send_channel, class: :Channel
+  many_to_many :channels, class: :Account,
+  join_table: :accounts_channels,
+  left_key: :account_id, right_key: :channel_id
+
 
   def password=(new_password)
     nacl = RbNaCl::Random.random_bytes(RbNaCl::PasswordHash::SCrypt::SALTBYTES)
