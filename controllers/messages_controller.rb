@@ -27,7 +27,7 @@ class MessengerAPI < Sinatra::Base
     begin
       data = JSON.parse(request.body.read)
       saved_message = CreateNewMessage.call(
-        sender: data['sender'], 
+        sender: data['sender'],
         receiver: data['receiver'],
         message: data['message'])
     rescue => e

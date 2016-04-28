@@ -7,7 +7,7 @@ require 'json'
 class Account < Sequel::Model
   include SecureModel
   plugin :timestamps, update_on_create: true
-  set_allowed_columns :username, :email
+  set_allowed_columns :username, :password ,:email
 
   def password=(new_password)
     nacl = RbNaCl::Random.random_bytes(RbNaCl::PasswordHash::SCrypt::SALTBYTES)
