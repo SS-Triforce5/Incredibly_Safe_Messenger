@@ -29,12 +29,12 @@ class MessengerAPI < Sinatra::Base
       saved_message = CreateNewMessage.call(
         sender: data['sender'],
         receiver: data['receiver'],
-        message: data['message'])
+        message: data['message_base64'])
     rescue => e
       logger.info "FAILED to create new message: #{e.inspect}"
       halt 400
      end
-     new_location = URI.join(@request_url.to_s + '/', saved_message.id.to_s).to_s
+     new_location = URI.join(@request_url.to_s + '/', saved_message.sender).to_s
      status 201
      headers('Location' => new_location)
   end
