@@ -1,4 +1,4 @@
-Dir.glob('./{controllers,services,config,models}/init.rb').each do |file|
+Dir.glob('./{controllers,lib,services,config,models}/init.rb').each do |file|
   require file
 end
 

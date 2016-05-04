@@ -1,21 +1,19 @@
 require 'json'
 require 'sequel'
 require 'base64'
-require_relative'lib/secure_model'
 
 class Message < Sequel::Model
-  include SecureModel
   plugin :timestamps, :update_on_create => true
   set_allowed_columns :sender, :receiver
-
   many_to_one :who_send, class: :Account
 
+
   def message=(message_plaintext)
-    self.message_encrypted = encrypt(message_plaintext)
+    self.message_encrypted = SecureDB.encrypt(message_plaintext) if message_plaintext
   end
 
   def message
-    decrypt(message_encrypted)
+    SecureDB.decrypt(message_encrypted)
   end
 
   def to_json(options = {})
@@ -27,6 +25,7 @@ class Message < Sequel::Model
         data: {
           sender: sender,
           receiver: receiver,
+          recived_channel: recived_channel,
           message_base64: msg,
           time: created_at
         }
