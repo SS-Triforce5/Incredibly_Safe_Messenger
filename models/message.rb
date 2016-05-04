@@ -10,6 +10,9 @@ class Message < Sequel::Model
   set_allowed_columns :sender, :receiver
   many_to_one :who_send, class: :Account
 
+<<<<<<< HEAD
+>>>>>>> f5e70f2c3815b47c7a8bbef040eebf56f21d57ec
+=======
 >>>>>>> f5e70f2c3815b47c7a8bbef040eebf56f21d57ec
 
   def message=(message_plaintext)
@@ -30,8 +33,11 @@ class Message < Sequel::Model
           sender: sender,
           receiver: receiver,
 <<<<<<< HEAD
+<<<<<<< HEAD
           message: msg,
 =======
+=======
+>>>>>>> f5e70f2c3815b47c7a8bbef040eebf56f21d57ec
           recived_channel: recived_channel,
           message_base64: msg,
 >>>>>>> f5e70f2c3815b47c7a8bbef040eebf56f21d57ec
