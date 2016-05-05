@@ -22,10 +22,10 @@ namespace :db do
     Sequel::Migrator.run(DB, 'db/migrations', target: 0)
     Sequel::Migrator.run(DB, 'db/migrations')
   end
-  
+
   desc 'Populate the database with test values'
   task :seed do
-    load './db/seeds/account_message.rb'
+    load './db/seeds/accounts_messages.rb'
   end
 
   desc 'Reset and repopulate database'
