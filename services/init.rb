@@ -1,2 +1,3 @@
 require_relative 'create_new_user'
 require_relative 'create_new_message'
+require_relative 'find_and_authenticate_account'

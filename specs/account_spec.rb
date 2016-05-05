@@ -49,4 +49,34 @@ describe 'Testing Account resource routes' do
       msgs.count.must_equal 5
     end
   end
+
+
+  describe 'Authenticating an account' do
+    before do
+      @account = CreateNewAccount.call(
+        username: 'soumya.ray',
+        email: 'sray@nthu.edu.tw',
+        password: 'soumya.password')
+    end
+
+    it 'HAPPY: should be able to authenticate a real account' do
+      get '/api/v1/account/soumya.ray/authenticate?password=soumya.password'
+      _(last_response.status).must_equal 200
+    end
+
+    it 'SAD: should not authenticate an account with a bad password' do
+      get '/api/v1/account/soumya.ray/authenticate?password=guess.password'
+      _(last_response.status).must_equal 401
+    end
+
+    it 'SAD: should not authenticate an account with an invalid username' do
+      get '/api/v1/account/randomuser/authenticate?password=soumya.password'
+      _(last_response.status).must_equal 401
+    end
+
+    it 'BAD: should not authenticate an account with password' do
+      get '/api/v1/account/soumya.ray/authenticate'
+      _(last_response.status).must_equal 401
+    end
+  end
 end
