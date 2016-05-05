@@ -22,6 +22,15 @@ namespace :db do
     Sequel::Migrator.run(DB, 'db/migrations', target: 0)
     Sequel::Migrator.run(DB, 'db/migrations')
   end
+  
+  desc 'Populate the database with test values'
+  task :seed do
+    load './db/seeds/account_message.rb'
+  end
+
+  desc 'Reset and repopulate database'
+  task :reseed => [:reset, :seed]
+
 end
 
 desc 'Run all the tests'
@@ -37,5 +46,14 @@ namespace :key do
   task :generate do
     key = RbNaCl::Random.random_bytes(RbNaCl::SecretBox.key_bytes)
     puts "KEY: #{Base64.strict_encode64 key}"
+  end
+end
+
+namespace :deploy do
+  require 'config_env/rake_tasks'
+  ConfigEnv.path_to_config("#{__dir__}/config/config_env.rb")
+
+  task :config do
+    Rake::Task['deploy:config_env:heroku'].invoke
   end
 end
