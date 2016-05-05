@@ -4,7 +4,7 @@ require_relative './spec_helper'
 describe 'Testing Message resource routes' do
   before do
     Account.dataset.delete
-    Channel.dataset.delete
+    #Channel.dataset.delete
     Message.dataset.delete
   end
 

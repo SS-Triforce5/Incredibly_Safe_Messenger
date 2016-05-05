@@ -29,7 +29,7 @@ class MessengerAPI < Sinatra::Base
       saved_message = CreateNewMessage.call(
         sender: data['sender'],
         receiver: data['receiver'],
-        message: data['message'])
+        message: data['message_base64'])
     rescue => e
       logger.info "FAILED to create new message: #{e.inspect}"
       halt 400

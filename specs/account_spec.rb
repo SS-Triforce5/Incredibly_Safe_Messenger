@@ -3,7 +3,7 @@ require_relative './spec_helper'
 describe 'Testing Account resource routes' do
   before do
     Account.dataset.delete
-    Channel.dataset.delete
+    #Channel.dataset.delete
     Message.dataset.delete
   end
 
@@ -28,7 +28,7 @@ describe 'Testing Account resource routes' do
 
   describe 'Finding existing Accounts' do
     it 'HAPPY: should find an existing account' do
-      new_account = Account.create(username: 'Demo_Account',  email:'Demo@nthu.edu.tw',password: 'Demo Password')
+      new_account = CreateNewAccount.call(username: 'Demo_Account',  email:'Demo@nthu.edu.tw',password: 'Demo Password')
       get "/api/v1/account/#{new_account.id}"
       _(last_response.status).must_equal 200
       results = JSON.parse(last_response.body)
@@ -43,7 +43,7 @@ describe 'Testing Account resource routes' do
 
   describe 'Getting an index of existing Accounts' do
     it 'HAPPY: should find list of existing Accounts' do
-      (1..5).each { |i| Account.create(username: "Account_#{i}", email:"Demo_#{i}@nthu.edu.tw",password: "demo_#{i}") }
+      (1..5).each { |i|  CreateNewAccount.call(username: "Account_#{i}", email:"Demo_#{i}@nthu.edu.tw",password: "demo_#{i}") }
       result = get '/api/v1/account'
       msgs = JSON.parse(result.body)
       msgs.count.must_equal 5
