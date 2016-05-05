@@ -1,5 +1,5 @@
 # Sinatra Application Controllers
-class ShareConfigurationsAPI < Sinatra::Base
+class MessengerAPI < Sinatra::Base
   find_all_message = lambda do
     content_type 'application/json'
 
