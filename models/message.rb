@@ -4,16 +4,9 @@ require 'base64'
 
 class Message < Sequel::Model
   plugin :timestamps, :update_on_create => true
-<<<<<<< HEAD
-  set_allowed_columns :sender, :receiver 
-=======
   set_allowed_columns :sender, :receiver
   many_to_one :who_send, class: :Account
 
-<<<<<<< HEAD
->>>>>>> f5e70f2c3815b47c7a8bbef040eebf56f21d57ec
-=======
->>>>>>> f5e70f2c3815b47c7a8bbef040eebf56f21d57ec
 
   def message=(message_plaintext)
     self.message_encrypted = SecureDB.encrypt(message_plaintext) if message_plaintext
@@ -32,15 +25,7 @@ class Message < Sequel::Model
         data: {
           sender: sender,
           receiver: receiver,
-<<<<<<< HEAD
-<<<<<<< HEAD
-          message: msg,
-=======
-=======
->>>>>>> f5e70f2c3815b47c7a8bbef040eebf56f21d57ec
-          recived_channel: recived_channel,
           message_base64: msg,
->>>>>>> f5e70f2c3815b47c7a8bbef040eebf56f21d57ec
           time: created_at
         }
       },
