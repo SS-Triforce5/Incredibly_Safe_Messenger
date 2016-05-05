@@ -14,7 +14,7 @@ class MessengerAPI < Sinatra::Base
     end
   end
 
-  get '/api/v1/account/:username/authenticate', &app_do_authenticate
+  get '/api/v1/accounts/:username/authenticate', &app_do_authenticate
 
 
 end
