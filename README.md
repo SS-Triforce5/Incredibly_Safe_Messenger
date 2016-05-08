@@ -5,6 +5,11 @@ We devote to provide our user the safest online chatting service so FBI cannot s
 ##Description
 Our project is to create a real-time messenger for users who sign up to our service.
 Message records will be finely secured so no one apart from the conversation could have access to those messages.
+## heroku
+###Client
+`http://incredibly-safe-messenger-api.herokuapp.com`
+###API
+`http://incredibly-safe-messenger-api.herokuapp.com`
 ## Routes
 
 ### Application Routes
