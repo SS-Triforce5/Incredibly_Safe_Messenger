@@ -7,7 +7,7 @@ Our project is to create a real-time messenger for users who sign up to our serv
 Message records will be finely secured so no one apart from the conversation could have access to those messages.
 ## heroku
 ###Client
-`http://incredibly-safe-messenger-api.herokuapp.com`
+`http://messenger-client.herokuapp.com`
 ###API
 `http://incredibly-safe-messenger-api.herokuapp.com`
 ## Routes
