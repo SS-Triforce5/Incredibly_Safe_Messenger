@@ -1,9 +1,14 @@
 require 'sinatra'
 require 'yaml'
 require 'json'
+require 'rack/ssl-enforcer'
 
 class MessengerAPI < Sinatra::Base
-  enable :logging
+ enable :logging
+
+ configure :production do
+ use Rack::SslEnforcer
+ end
 
   before do
     host_url = "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
