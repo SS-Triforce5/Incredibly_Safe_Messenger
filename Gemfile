@@ -9,7 +9,7 @@ gem 'rbnacl-libsodium'
 gem 'tux'
 gem 'hirb'
 gem 'rack-ssl-enforcer'
-
+gem 'jose'
 
 
 group :development do

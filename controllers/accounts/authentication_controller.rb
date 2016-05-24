@@ -1,20 +1,17 @@
-
-class MessengerAPI < Sinatra::Base
-
-  app_do_authenticate = lambda do
+# Sinatra Application Controllers
+class ShareConfigurationsAPI < Sinatra::Base
+  post '/api/v1/accounts/authenticate' do
     content_type 'application/json'
-    username = params[:username]
-    password = params[:password]
-    account = FindAndAuthenticateAccount.call(username: username , password: password)
+
+    credentials = JSON.parse(request.body.read)
+    account, auth_token = AuthenticateAccount.call(
+      username: credentials['username'], password: credentials['password'])
 
     if account
-      account.to_json
+      { account: account,
+        auth_token: auth_token }.to_json
     else
-      halt 401, "Account #{username} could not be authenticated"
+      halt 401, 'Account could not be authenticated'
     end
   end
-
-  get '/api/v1/account/:username/authenticate', &app_do_authenticate
-
-
 end
