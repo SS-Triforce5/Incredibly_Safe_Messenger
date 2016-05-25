@@ -10,6 +10,19 @@ class MessengerAPI < Sinatra::Base
  use Rack::SslEnforcer
  end
 
+  def authenticated_account(env)
+    scheme, auth_token = env['HTTP_AUTHORIZATION'].split(' ')
+    account_payload = JSON.load JWE.decrypt(auth_token)
+    (scheme =~ /^Bearer$/i) ? account_payload : nil
+  end
+
+  def authorized_account?(env, id)
+    account = authenticated_account(env)
+    account['id'] == id.to_i
+  rescue
+    false
+  end
+
   before do
     host_url = "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
     @request_url = URI.join(host_url, request.path.to_s)
