@@ -1,5 +1,5 @@
 # Sinatra Application Controllers
-class ShareConfigurationsAPI < Sinatra::Base
+class MessengerAPI < Sinatra::Base
   post '/api/v1/account/authenticate' do
     content_type 'application/json'
 
