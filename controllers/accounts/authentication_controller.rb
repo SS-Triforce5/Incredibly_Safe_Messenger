@@ -1,6 +1,6 @@
 # Sinatra Application Controllers
 class ShareConfigurationsAPI < Sinatra::Base
-  post '/api/v1/accounts/authenticate' do
+  post '/api/v1/account/authenticate' do
     content_type 'application/json'
 
     credentials = JSON.parse(request.body.read)
