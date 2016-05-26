@@ -5,7 +5,7 @@ Sequel.migration do
     create_table(:messages) do
       primary_key :id
       foreign_key :sender, :accounts
-      String :receiver, null: false
+      Integer :receiver, null: false
       String :message_encrypted, text: true
       timestamp :created_at
     end

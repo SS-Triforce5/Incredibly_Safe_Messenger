@@ -1,2 +1,5 @@
-require_relative 'create_new_user'
-require_relative 'create_new_message'
+require_relative 'create_new_account'
+require_relative 'create_new_message_from_sender'
+require_relative 'find_and_authenticate_account'
+require_relative 'find_all_account_message'
+require_relative 'authenticate_account'
