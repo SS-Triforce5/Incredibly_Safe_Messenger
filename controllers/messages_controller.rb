@@ -34,7 +34,7 @@ class MessengerAPI < Sinatra::Base
   end
 
   get '/api/v1/message/?', &app_get_all_messages
-  get '/api/v1/message/:id', &app_get_message
+  get '/api/v1/message/:username/?', &app_get_message
   post '/api/v1/message/?', &app_post_message
 
 end
