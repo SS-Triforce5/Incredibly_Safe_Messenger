@@ -2,10 +2,10 @@
 class MessengerAPI < Sinatra::Base
 
   app_get_all_accounts = lambda do
-    Account.all.to_json
+    JSON.pretty_generate(Account.map{ |x| x.username })
   end
 
-  app_get_account = lambda do
+  app_get_account_info = lambda do
     content_type 'application/json'
     data = Account.where(id: :$find_id)
     call_data = data.call(:select, :find_id => params[:id])
@@ -33,7 +33,7 @@ class MessengerAPI < Sinatra::Base
   end
 
   get '/api/v1/account/?', &app_get_all_accounts
-  get '/api/v1/account/:id', &app_get_account
+  get '/api/v1/account/:id', &app_get_account_info
   post '/api/v1/account/?', &app_post_account
 
 end
