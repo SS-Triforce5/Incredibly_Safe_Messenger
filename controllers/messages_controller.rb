@@ -1,25 +1,20 @@
 class MessengerAPI < Sinatra::Base
+
   app_get_all_messages = lambda do
     Message.all.to_json
   end
 
-  app_get_message_json = lambda do
-    data = Message.where(sender: params[:id]).or(receiver: params[:id]).all.to_json
-    if !data.empty?
-      JSON.pretty_generate(data)
-    else
-      halt 404, "Messages of id #{params[:id]} not found"
-    end
-  end
-
   app_get_message = lambda do
-    content_type 'application/json'
-    messages = Message.where(sender: :$find_id)
-    call_message = messages.call(:select, :find_id => params[:id])
-    if !call_message.empty?
-      JSON.pretty_generate(call_message)
-    else
-      halt 404, "MESSAGE NOT FOUND: #{params[:id]}"
+    begin
+      content_type 'application/json'
+      user = Account.where(username: params[:username]).first
+      range = (params[:after] ? Time.parse(params[:after]) : Time.at(0))..Time.now
+      messages = Message.where(sender: user.id, created_at: range)\
+                 .or(receiver: user.id, created_at: range).all
+      JSON.pretty_generate(messages)
+    rescue => e
+      logger.info "FAILED to get message of #{params[:username]}: #{e.inspect}"
+      halt 400
     end
   end
 
@@ -40,8 +35,7 @@ class MessengerAPI < Sinatra::Base
   end
 
   get '/api/v1/message/?', &app_get_all_messages
-  get '/api/v1/message/:id.json', &app_get_message_json
-  get '/api/v1/message/:id', &app_get_message
+  get '/api/v1/message/:username/?', &app_get_message
   post '/api/v1/message/?', &app_post_message
 
 end

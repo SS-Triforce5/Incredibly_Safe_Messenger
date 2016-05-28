@@ -17,7 +17,6 @@ class Message < Sequel::Model
   end
 
   def to_json(options = {})
-    msg = message ? Base64.strict_encode64(message) : nil
     JSON.pretty_generate(
       {
         type: 'message',
@@ -25,7 +24,7 @@ class Message < Sequel::Model
         data: {
           sender: sender,
           receiver: receiver,
-          message_base64: msg,
+          message: message,
           time: created_at
         }
       },
