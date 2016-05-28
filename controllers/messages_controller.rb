@@ -7,12 +7,13 @@ class MessengerAPI < Sinatra::Base
   app_get_message = lambda do
     begin
       content_type 'application/json'
-      user = Account.where(username: params[:username])
-      range = (params[:after] ? params[:after] : Time.at(0))..Time.now
-      messages = Message.where(sender: user.id, created_at: range).or(receiver: user.id, created_at: range)
+      user = Account.where(username: params[:username]).first
+      range = (params[:after] ? Time.parse(params[:after]) : Time.at(0))..Time.now
+      messages = Message.where(sender: user.id, created_at: range)\
+                 .or(receiver: user.id, created_at: range).all
       JSON.pretty_generate(messages)
-    else
-      logger.info "FAILED to get message of : #{params[:username]}"
+    rescue => e
+      logger.info "FAILED to get message of #{params[:username]}: #{e.inspect}"
       halt 400
     end
   end
