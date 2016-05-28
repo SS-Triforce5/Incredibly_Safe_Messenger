@@ -1,15 +1,7 @@
 class MessengerAPI < Sinatra::Base
+
   app_get_all_messages = lambda do
     Message.all.to_json
-  end
-
-  app_get_message_json = lambda do
-    data = Message.where(sender: params[:id]).or(receiver: params[:id]).all.to_json
-    if !data.empty?
-      JSON.pretty_generate(data)
-    else
-      halt 404, "Messages of id #{params[:id]} not found"
-    end
   end
 
   app_get_message = lambda do
@@ -40,7 +32,6 @@ class MessengerAPI < Sinatra::Base
   end
 
   get '/api/v1/message/?', &app_get_all_messages
-  get '/api/v1/message/:id.json', &app_get_message_json
   get '/api/v1/message/:id', &app_get_message
   post '/api/v1/message/?', &app_post_message
 
