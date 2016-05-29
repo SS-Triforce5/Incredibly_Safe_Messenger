@@ -2,6 +2,7 @@
 class MessengerAPI < Sinatra::Base
 
   app_get_all_accounts = lambda do
+    content_type 'application/json'
     JSON.pretty_generate(Account.map{ |x| x.username })
   end
 
