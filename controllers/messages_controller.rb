@@ -4,7 +4,7 @@ class MessengerAPI < Sinatra::Base
     content_type 'application/json'
     begin
       account = Account.where(username: params[:username]).first
-      all_messages = FindAllAccountMessages.call(account)
+      all_messages = Message.where(sender: account.id).or(receiver: account.id).all
       JSON.pretty_generate(all_messages)
     rescue => e
       logger.info "FAILED to find messages for user #{params[:username]}: #{e}"
