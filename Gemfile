@@ -10,6 +10,8 @@ gem 'tux'
 gem 'hirb'
 gem 'rack-ssl-enforcer'
 gem 'jose'
+gem 'rake'
+gem 'http'
 
 
 group :development do
