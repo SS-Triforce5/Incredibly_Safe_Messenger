@@ -26,30 +26,24 @@ describe 'Testing Message resource routes' do
     end
   end
 
-  describe 'Finding existing messages' do
-    it 'HAPPY: should find an existing message' do
-      new_message = Message.create(sender: 'Kuan' ,receiver: 'pengyuchen')
-      new_message.message = 'hello~~~~~'
-      new_message.save
-      get "/api/v1/message/#{new_message.sender}"
+  describe 'Finding all messages of one user' do
+    it 'HAPPY: should find all existing message of one user' do
+      act1 = CreateNewAccount.call(username: 'Kuan', email:'abc@gmail.com',password:'123')
+      act2 = CreateNewAccount.call(username: 'Edward', email:'def@gmail.com',password:'123')
+      msg = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Hi')
+      msg2 = CreateNewMessageFromSender.call(sender: 'Edward' , receiver: 'Kuan',message: 'Hello!')
+      get "/api/v1/message/Kuan"
       _(last_response.status).must_equal 200
       results = JSON.parse(last_response.body)
-      _(results[0]['id']).must_equal new_message.id
+      _(results['data'].count).must_equal 2
     end
 
-    it 'SAD: should not find non-existent messages' do
-      get "/api/v1/messages/#{invalid_id(Message)}"
+    it 'SAD: should not find non-exis user' do
+      get "/api/v1/messages/junbo"
       _(last_response.status).must_equal 404
     end
   end
-=begin
-  describe 'Getting an index of existing messages' do
-    it 'HAPPY: should find list of existing messages' do
-      (1..5).each { |i| Message.create(sender: 'Kuan', receiver: 'pengyuchen',message:"hello there #{i}") }
-      result = get '/api/v1/message'
-      msgs = JSON.parse(result.body)
-      msgs.count.must_equal 5
-    end
-  end
-=end
+
+
+
 end

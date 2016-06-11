@@ -10,7 +10,7 @@ class AuthenticateAccount
 
   private_class_method
 
-def self.passwords_match(account, credentials)
-  account && account.password?(credentials['password'])
-end 
+  def self.passwords_match(account, credentials)
+    account && account.password?(credentials['password'])
+  end
 end
