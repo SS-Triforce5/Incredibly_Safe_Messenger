@@ -21,11 +21,10 @@ class MessengerAPI < Sinatra::Base
 
   app_post_account = lambda do
     begin
-      data = JSON.parse(request.body.read)
-      new_account = CreateNewAccount.call(
-        username: data['username'],
-        email: data['email'],
-        password: data['password'])
+      signed_full_registration = request.body.read
+      new_account = CreateNewAccount.call(signed_full_registration)
+    rescue ClientNotAuthorized => e
+      halt 401, e.to_s
     rescue => e
       logger.info "FAILED to create new account: #{e.inspect}"
       halt 400
