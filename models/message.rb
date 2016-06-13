@@ -13,7 +13,7 @@ class Message < Sequel::Model
   end
 
   def message
-    SecureDB.decrypt(message_encrypted)
+    message_encrypted == nil ? '' : SecureDB.decrypt(message_encrypted).force_encoding('utf-8')
   end
 
   def to_json(options = {})
