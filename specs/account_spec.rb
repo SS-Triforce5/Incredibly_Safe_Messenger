@@ -11,7 +11,7 @@ describe 'Testing Account resource routes' do
     before do
       @registration_data = {
         username: 'test.name',
-        passowrd: 'mypass',
+        password: 'mypass',
         email: 'test@email.com'}
       @req_body = client_signed(@registration_data)
     end
@@ -61,7 +61,7 @@ describe 'Testing Account resource routes' do
   describe 'Finding existing Accounts' do
     before do
       @new_account = create_client_account(username: 'Demo_Account',  email:'Demo@email.com' , password: 'mypassword')
-      @auth_token = authorized_account_token(usernae: 'Demo_Account' , password:'mypassword')
+      @auth_token = authorized_account_token(username: 'Demo_Account' , password:'mypassword')
     end
     it 'HAPPY: should find an existing account' do
       get "/api/v1/account/#{@new_account.id}",nil,
@@ -88,7 +88,7 @@ describe 'Testing Account resource routes' do
   describe 'Authenticating an account' do
     def login_with(username:,password:,client_auth: true)
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      credentials = { username:username , passowrd:password }.to_json
+      credentials = { username:username , password:password }.to_json
 
       if client_auth
         app_secret_key = JOSE::JWK.from_okp([:Ed25519, Base64.decode64(ENV['APP_SECRET_KEY'])])

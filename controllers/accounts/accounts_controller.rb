@@ -10,10 +10,13 @@ class MessengerAPI < Sinatra::Base
 
   app_get_account_info = lambda do
     content_type 'application/json'
-    data = Account.where(id: :$find_id)
-    call_data = data.call(:select, :find_id => params[:id])
-    if !call_data.empty?
-      JSON.pretty_generate(call_data)
+
+    id = params[:id]
+    halt 401 unless authorized_account?(env, id)
+    account = Account.where(id:  id).first
+
+    if account
+      JSON.pretty_generate(data: account)
     else
       halt 404, "Account #{params[:id]} not found"
     end
