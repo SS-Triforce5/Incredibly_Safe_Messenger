@@ -26,30 +26,43 @@ describe 'Testing Message resource routes' do
     end
   end
 
-  describe 'Finding existing messages' do
-    it 'HAPPY: should find an existing message' do
-      new_message = Message.create(sender: 'Kuan' ,receiver: 'pengyuchen')
-      new_message.message = 'hello~~~~~'
-      new_message.save
-      get "/api/v1/message/#{new_message.sender}"
+  describe 'Finding all messages of one user' do
+    @my_account = create_client_account(username: 'Kuan', email:'abc@gmail.com',password:'123')
+    @other_account = create_client_account(username: 'Edward', email:'def@gmail.com',password:'777')
+    @other_account2 = create_client_account(username: 'Tim', email:'ya@gmail.com',password:'888')
+    msg = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Hi')
+    msg2 = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Tim',message: 'Hello!')
+    it 'HAPPY: should find all existing message of one user' do
+      auth_token = authorized_account_token(username: 'Kuan', password: '123')
+      get "/api/v1/message/#{@my_account.username}" ,nil,
+        'HTTP_AUTHORIZATION' => "Bearer #{auth_token}"
       _(last_response.status).must_equal 200
       results = JSON.parse(last_response.body)
-      _(results[0]['id']).must_equal new_message.id
+      _(results['data'].count).must_equal 2
     end
 
-    it 'SAD: should not find non-existent messages' do
-      get "/api/v1/messages/#{invalid_id(Message)}"
+    it 'SAD: should not find non-exis user' do
+      get "/api/v1/messages/junbo"
       _(last_response.status).must_equal 404
     end
   end
-=begin
-  describe 'Getting an index of existing messages' do
-    it 'HAPPY: should find list of existing messages' do
-      (1..5).each { |i| Message.create(sender: 'Kuan', receiver: 'pengyuchen',message:"hello there #{i}") }
-      result = get '/api/v1/message'
-      msgs = JSON.parse(result.body)
-      msgs.count.must_equal 5
+
+  describe 'Finding the message between two users' do
+    @my_account = create_client_account(username: 'Kuan', email:'abc@gmail.com',password:'123')
+    @other_account = create_client_account(username: 'Edward', email:'def@gmail.com',password:'777')
+    msg = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Hi')
+    msg2 = CreateNewMessageFromSender.call(sender: 'Edward' , receiver: 'Kuan',message: 'Good morning!')
+    msg3 = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Its raining')
+
+    it 'HAPPY: should find all messages between two users' do
+      auth_token = authorized_account_token(username: 'Kuan', password: '123')
+      get "/api/v1/message/#{@my_account.username}/#{@other_account.username}" ,nil,
+        'HTTP_AUTHORIZATION' => "Bearer #{auth_token}"
+      _(last_response.status).must_equal 200
+      results = JSON.parse(last_response.body)
+      _(results['data'].count).must_equal 3
     end
   end
-=end
+
+
 end
