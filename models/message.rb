@@ -22,8 +22,8 @@ class Message < Sequel::Model
         type: 'message',
         id: id,
         data: {
-          sender: Account.where(id: sender).first.username,
-          receiver: Account.where(id: receiver).first.username,
+          sender: BaseAccount.where(id: sender).first.username,
+          receiver: BaseAccount.where(id: receiver).first.username,
           message: message,
           time: created_at
         }

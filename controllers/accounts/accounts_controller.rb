@@ -3,7 +3,7 @@ class MessengerAPI < Sinatra::Base
 
   app_get_all_accounts = lambda do
     content_type 'application/json'
-    data = Account.map{ |x| { username: x.username,
+    data = BaseAccount.map{ |x| { username: x.username,
                               updated_at: x.updated_at}}
     JSON.pretty_generate(data)
   end
@@ -13,7 +13,7 @@ class MessengerAPI < Sinatra::Base
 
     id = params[:id]
     halt 401 unless authorized_account?(env, id)
-    account = Account.where(id:  id).first
+    account = BaseAccount.where(id:  id).first
 
     if account
       JSON.pretty_generate(data: account)
