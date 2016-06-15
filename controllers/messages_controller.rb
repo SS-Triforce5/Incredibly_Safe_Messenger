@@ -3,7 +3,7 @@ class MessengerAPI < Sinatra::Base
   app_get_all_message = lambda do
     content_type 'application/json'
     begin
-      account = Account.where(username: params[:username]).first
+      account = BaseAccount.where(username: params[:username]).first
       all_messages = Message.where(sender: account.id).or(receiver: account.id).all
       JSON.pretty_generate(all_messages)
     rescue => e
@@ -15,8 +15,8 @@ class MessengerAPI < Sinatra::Base
   app_get_message = lambda do
     begin
       content_type 'application/json'
-      master = Account.where(username: params[:username]).first
-      slave = Account.where(username: params[:with]).first
+      master = BaseAccount.where(username: params[:username]).first
+      slave = BaseAccount.where(username: params[:with]).first
       range = (params[:after] ? Time.parse(params[:after]) : Time.at(0))..Time.now
       messages = Message.where(sender: master.id, receiver: slave.id, created_at: range)\
                  .or(sender: slave.id, receiver: master.id, created_at: range).all
