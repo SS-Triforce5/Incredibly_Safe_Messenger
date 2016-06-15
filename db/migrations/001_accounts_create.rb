@@ -8,7 +8,7 @@ Sequel.migration do
       String :username, null: false
       String :email, null: false, unique: true
       String :password_hash
-      String :salt, null: false
+      String :salt
       DateTime :created_at
       DateTime :updated_at
       unique [:type, :username]
