@@ -3,15 +3,21 @@ require_relative './spec_helper'
 
 describe 'Testing Message resource routes' do
   before do
+    Message.dataset.delete
     Account.dataset.delete
     #Channel.dataset.delete
-    Message.dataset.delete
+
   end
 
   describe 'Creating new Messages' do
+    before do
+    @my_account = create_client_account(username: 'Kuan', email:'abc@gmail.com',password:'123')
+    @other_account = create_client_account(username: 'Edward', email:'def@gmail.com',password:'777')
+    end
     it 'HAPPY: should create a new Message' do
+      auth_token = authorized_account_token(username: 'Kuan', password: '123')
       req_header = { 'CONTENT_TYPE' => 'application/json' }
-      req_body = { sender: 'Demo Sender', receiver: 'Demo Receiver',message: 'hello'}.to_json
+      req_body = { sender: 'Kuan', receiver: 'Edward',message: 'hello'}.to_json
       post '/api/v1/message/', req_body, req_header
       _(last_response.status).must_equal 201
       _(last_response.location).must_match(%r{http://})
@@ -27,18 +33,20 @@ describe 'Testing Message resource routes' do
   end
 
   describe 'Finding all messages of one user' do
-    @my_account = create_client_account(username: 'Kuan', email:'abc@gmail.com',password:'123')
-    @other_account = create_client_account(username: 'Edward', email:'def@gmail.com',password:'777')
-    @other_account2 = create_client_account(username: 'Tim', email:'ya@gmail.com',password:'888')
-    msg = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Hi')
-    msg2 = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Tim',message: 'Hello!')
+    before do
+      @my_account = create_client_account(username: 'Kuan', email:'abc@gmail.com',password:'123')
+      @other_account = create_client_account(username: 'Edward', email:'def@gmail.com',password:'777')
+      @other_account2 = create_client_account(username: 'Tim', email:'ya@gmail.com',password:'888')
+      msg = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Hi')
+      msg2 = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Tim',message: 'Hello!')
+    end
     it 'HAPPY: should find all existing message of one user' do
       auth_token = authorized_account_token(username: 'Kuan', password: '123')
       get "/api/v1/message/#{@my_account.username}" ,nil,
         'HTTP_AUTHORIZATION' => "Bearer #{auth_token}"
       _(last_response.status).must_equal 200
       results = JSON.parse(last_response.body)
-      _(results['data'].count).must_equal 2
+      _(results.count).must_equal 2
     end
 
     it 'SAD: should not find non-exis user' do
@@ -48,19 +56,20 @@ describe 'Testing Message resource routes' do
   end
 
   describe 'Finding the message between two users' do
-    @my_account = create_client_account(username: 'Kuan', email:'abc@gmail.com',password:'123')
-    @other_account = create_client_account(username: 'Edward', email:'def@gmail.com',password:'777')
-    msg = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Hi')
-    msg2 = CreateNewMessageFromSender.call(sender: 'Edward' , receiver: 'Kuan',message: 'Good morning!')
-    msg3 = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Its raining')
-
+    before do
+      @my_account = create_client_account(username: 'Kuan', email:'abc@gmail.com',password:'123')
+      @other_account = create_client_account(username: 'Edward', email:'def@gmail.com',password:'777')
+      msg = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Hi')
+      msg2 = CreateNewMessageFromSender.call(sender: 'Edward' , receiver: 'Kuan',message: 'Good morning!')
+      msg3 = CreateNewMessageFromSender.call(sender: 'Kuan' , receiver: 'Edward',message: 'Its raining')
+    end
     it 'HAPPY: should find all messages between two users' do
       auth_token = authorized_account_token(username: 'Kuan', password: '123')
       get "/api/v1/message/#{@my_account.username}/#{@other_account.username}" ,nil,
         'HTTP_AUTHORIZATION' => "Bearer #{auth_token}"
       _(last_response.status).must_equal 200
       results = JSON.parse(last_response.body)
-      _(results['data'].count).must_equal 3
+      _(results.count).must_equal 3
     end
   end
 
